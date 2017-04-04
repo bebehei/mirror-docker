@@ -1,14 +1,16 @@
-FROM debian:jessie
-MAINTAINER TANABE Ken-ichi <nabeken@tknetworks.org>
+FROM alpine
+MAINTAINER Benedikt Heine
 
-RUN apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends rsync && \
-  apt-get clean autoclean && \
-  apt-get autoremove -y && \
-  rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache --update \
+      nginx \
+      rsync \
+  && rm -f \
+      /etc/rsyncd.conf \
+      /etc/nginx/conf.d/default.conf
 
-EXPOSE 873
-VOLUME /docker
+
+EXPOSE 873 80 443
+VOLUME /data
 ADD ./run /usr/local/bin/run
 
 ENTRYPOINT ["/usr/local/bin/run"]
